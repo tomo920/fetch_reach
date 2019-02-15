@@ -1,0 +1,16 @@
+import numpy as np
+from matplotlib import pyplot
+buffer1 = np.load('latest_buffer1.npy')
+buffer2 = np.load('latest_buffer2.npy')
+print("buffer1")
+print(len(buffer1))
+print("buffer2")
+print(len(buffer2))
+episode = np.load('episode.npy')
+total_reward = np.load('total_reward.npy')
+loss_q = np.load('loss_q.npy')
+print(total_reward)
+pyplot.plot(episode, total_reward)
+pyplot.show()
+pyplot.plot(episode, loss_q)
+pyplot.show()
