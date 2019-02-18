@@ -24,27 +24,27 @@ z = 0.15
 
 class MultiAgent:
     def __init__(self):
-        self.agent0 = Agent(10, 1, action0_high, action0_low)
-        self.agent1 = Agent(10, 1, action1_high, action1_low)
-        self.agent2 = Agent(10, 1, action2_high, action2_low)
-        self.agent3 = Agent(10, 1, action3_high, action3_low)
-        self.agent4 = Agent(10, 1, action4_high, action4_low)
-        self.agent5 = Agent(10, 1, action5_high, action5_low)
-        self.agent6 = Agent(10, 1, action6_high, action6_low)
-        self.agent_list = []
-        self.buffer0 = Buffer(10000)
-        self.buffer1 = Buffer(10000)
-        self.buffer2 = Buffer(10000)
-        self.buffer3 = Buffer(10000)
-        self.buffer4 = Buffer(10000)
-        self.buffer5 = Buffer(10000)
-        self.buffer6 = Buffer(10000)
-        self.buffer_list = []
+        agent0 = Agent(10, 1, action0_high, action0_low)
+        agent1 = Agent(10, 1, action1_high, action1_low)
+        agent2 = Agent(10, 1, action2_high, action2_low)
+        agent3 = Agent(10, 1, action3_high, action3_low)
+        agent4 = Agent(10, 1, action4_high, action4_low)
+        agent5 = Agent(10, 1, action5_high, action5_low)
+        agent6 = Agent(10, 1, action6_high, action6_low)
+        self.agent_list = [agent0, agent1, agent2, agent3, agent4, agent5, agent6]
+        buffer0 = Buffer(10000)
+        buffer1 = Buffer(10000)
+        buffer2 = Buffer(10000)
+        buffer3 = Buffer(10000)
+        buffer4 = Buffer(10000)
+        buffer5 = Buffer(10000)
+        buffer6 = Buffer(10000)
+        self.buffer_list = [buffer0, buffer1, buffer2, buffer3, buffer4, buffer5, buffer6]
 
     def choose_action(self, inputs, restriction):
         action = []
         for agent in self.agent_list:
-            action.append(agent.choose_action(inputs, restriction))
+            action.append(agent.choose_action(inputs, restriction)[0])
         return action
 
     def store(self, transition, goal):
@@ -62,6 +62,16 @@ class MultiAgent:
     def train(self):
         for agent, _buffer in zip(self.agent_list, self.buffer_list):
             agent.train(_buffer.transitions)
+
+    def save(self):
+        params = []
+        for agent in self.agent_list:
+            params.append(agent.save())
+        np.save('latest_params', params)
+        buffers = []
+        for _buffer in self.buffer_list:
+            buffers.append(_buffer.transitions)
+        np.save('buffers', buffers)
 
 class ddpg_fetchreach:
     def __init__(self):
@@ -82,6 +92,7 @@ class ddpg_fetchreach:
         state = self.state
         inputs = np.concatenate([state, self.goal])
         action = self.multiagent.choose_action(inputs, self.restriction)
+        print(action)
         self.env._step(action)
         next_state = self.state
         position = self.position
@@ -131,8 +142,8 @@ class ddpg_fetchreach:
             done = 0
         return done, -100.0 * distance
 
-    def save(self, str):
-        self.agent.save(str)
+    def save(self):
+        self.multiagent.save()
 
 def main():
     df = ddpg_fetchreach()
@@ -153,9 +164,8 @@ def main():
                 total_reward.append(df.total_reward)
                 np.save('episode', episode)
                 np.save('total_reward', total_reward)
-                df.save('latest_params')
+                df.save()
                 np.save('goal_list', df.goal_list)
-                np.save('latest_buffer', df.buffer.transitions)
                 break
 
 if __name__ == '__main__':

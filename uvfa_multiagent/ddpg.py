@@ -332,7 +332,7 @@ class Agent:
                                              self.actor_network.layer3.dense.weight, self.actor_network.layer3.dense.bias)
         return qloss
 
-    def save(self, str):
+    def save(self):
         critic_params = [self.critic_network.layer1.dense.weight, self.critic_network.layer1.dense.bias,
                          self.critic_network.layer2.dense.weight, self.critic_network.layer2.dense.bias,
                          self.critic_network.layer3.dense.weight, self.critic_network.layer3.dense.bias]
@@ -346,4 +346,4 @@ class Agent:
                         self.target_actor_network.layer2.dense.weight, self.target_actor_network.layer2.dense.bias,
                         self.target_actor_network.layer3.dense.weight, self.target_actor_network.layer3.dense.bias]
         params = [critic_params, actor_params, target_critic_params, target_actor_params]
-        np.save(str, params)
+        return params

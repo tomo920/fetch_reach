@@ -18,7 +18,8 @@ action5_high = np.array([1.57])
 action5_low = np.array([-1.57])
 action6_high = np.array([2.97])
 action6_low = np.array([-2.96])
-
+action_high = np.concatenate([action0_high, action1_high, action2_high, action3_high, action4_high, action5_high, action6_high])
+action_low = np.concatenate([action0_low, action1_low, action2_low, action3_low, action4_low, action5_low, action6_low])
 joint_names = ["crane_x7_shoulder_fixed_part_pan_joint",
                 "crane_x7_shoulder_revolute_part_tilt_joint",
                 "crane_x7_upper_arm_revolute_part_twist_joint",
@@ -45,7 +46,6 @@ class Enviroment:
         self.command_pub.publish(self.jt)
         self.jt.points = []
         self.rate.sleep()
-        print(action)
 
     def set_command(self, action):
         #self.jt = JointTrajectory()
