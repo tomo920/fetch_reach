@@ -124,13 +124,13 @@ class ddpg_fetchreach:
         self.transition_list = []
 
     def set_goal(self):
-        x = np.random.uniform(0.0, 0.5)
-        y = np.random.uniform(0.0, 0.5)
+        x = np.random.uniform(-0.5, 0.5)
+        y = np.random.uniform(-0.5, 0.5)
         goal = np.array([x, y, z])
         #confirm goal whether in work range
         while np.sum(goal**2) > 0.25:
-            x = np.random.uniform(0.0, 0.5)
-            y = np.random.uniform(0.0, 0.5)
+            x = np.random.uniform(-0.5, 0.5)
+            y = np.random.uniform(-0.5, 0.5)
             goal = np.array([x, y, z])
         return goal
 
